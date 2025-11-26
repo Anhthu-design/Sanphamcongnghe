@@ -144,7 +144,6 @@ const products = [
 ];
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
-let user = JSON.parse(localStorage.getItem("currentUser"));
 let shippingFee = 30000;
 
 function renderProducts(){
@@ -160,21 +159,29 @@ function renderProducts(){
 }
 
 function hienThiDaDangNhap(){
-    let u=JSON.parse(localStorage.getItem("currentUser"));
+    let u = JSON.parse(localStorage.getItem("currentUser"));
     if(u){
         document.getElementById("authContainer").style.display="none";
-        document.getElementById("menuAccount").innerText="Xin chào, "+u.username;
+
+        // giữ dropdown
+        const menuAccount = document.getElementById("menuAccount");
+        menuAccount.innerHTML = `Xin chào, ${u.username}<div id="dropdown">
+            <p><strong>Tài khoản:</strong> <span id="dropUser">${u.username}</span></p>
+            <p><strong>SĐT:</strong> <span id="dropPhone">${u.phone}</span></p>
+            <button onclick="dangXuat()">Đăng xuất</button>
+        </div>`;
+
         document.getElementById("formDaDangNhap").style.display="block";
-        document.getElementById("tenUser").innerText=u.username;
+        document.getElementById("tenUser").innerText = u.username;
+
         document.getElementById("productSection").style.display="block";
-        document.getElementById("fullName").value=u.username;
-        document.getElementById("phone").value=u.phone;
-        document.getElementById("dropUser").innerText=u.username;
-        document.getElementById("dropPhone").innerText=u.phone;
         renderProducts();
+
+        document.getElementById("fullName").value = u.username;
+        document.getElementById("phone").value = u.phone;
     } else {
-        document.getElementById("menuAccount").innerText="Đăng nhập / Đăng ký";
         document.getElementById("authContainer").style.display="block";
+        document.getElementById("productSection").style.display="none";
     }
 }
 
@@ -183,11 +190,13 @@ const menuAccount = document.getElementById("menuAccount");
 const dropdown = document.getElementById("dropdown");
 menuAccount.addEventListener("click", function(event){
     let u = JSON.parse(localStorage.getItem("currentUser"));
-    if(u){ dropdown.style.display=(dropdown.style.display==="block")?"none":"block"; }
-    else { document.getElementById("authContainer").style.display="block"; }
+    if(u){ 
+        const dd = document.getElementById("dropdown");
+        if(dd) dd.style.display=(dd.style.display==="block")?"none":"block"; 
+    } else { document.getElementById("authContainer").style.display="block"; }
     event.stopPropagation();
 });
-document.addEventListener("click", ()=>{ dropdown.style.display="none"; });
+document.addEventListener("click", ()=>{ const dd = document.getElementById("dropdown"); if(dd) dd.style.display="none"; });
 
 function chuyenSangDangNhap(){ formDangKy.style.display="none"; formDangNhap.style.display="block"; formDaDangNhap.style.display="none"; }
 function chuyenSangDangKy(){ formDangKy.style.display="block"; formDangNhap.style.display="none"; formDaDangNhap.style.display="none"; }
@@ -279,9 +288,3 @@ hienThiDaDangNhap();
 </script>
 </body>
     </html>
-
-
-
-
-
-
