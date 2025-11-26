@@ -6,75 +6,27 @@
 <title>Website</title>
 <style>
 body { font-family: Arial; margin:0; background:#f5f5f5; }
-
-/* HEADER */
 header {
-    display:flex;
-    justify-content:flex-start;
-    align-items:center;
-    background:#3498db;
-    padding:10px 20px;
-    color:white;
+    display:flex; justify-content:flex-start; align-items:center;
+    background:#3498db; padding:10px 20px; color:white;
 }
 header .cart { cursor:pointer; font-size:18px; }
 header .cart:hover { text-decoration:underline; }
 header #menuAccount { margin-left:auto; cursor:pointer; font-size:18px; }
 header #menuAccount:hover { text-decoration:underline; }
-
-/* KHUNG ĐĂNG NHẬP / ĐĂNG KÝ */
-.container {
-    width:350px;
-    margin:40px auto;
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 0 10px #ccc;
-}
-input {
-    width:100%;
-    padding:10px;
-    margin:8px 0;
-}
-button {
-    width:100%;
-    padding:10px;
-    background:#3498db;
-    color:white;
-    border:none;
-    cursor:pointer;
-    margin-top:10px;
-}
-.switch {
-    text-align:center;
-    color:#e74c3c;
-    margin-top:10px;
-    cursor:pointer;
-}
-
-/* DANH SÁCH SẢN PHẨM */
+.container { width:350px; margin:40px auto; background:white; padding:20px; border-radius:10px; box-shadow:0 0 10px #ccc; }
+input { width:100%; padding:10px; margin:8px 0; }
+button { width:100%; padding:10px; background:#3498db; color:white; border:none; cursor:pointer; margin-top:10px; }
+.switch { text-align:center; color:#e74c3c; margin-top:10px; cursor:pointer; }
 #productSection { display:none; }
-.product-container {
-    display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap:20px;
-    padding:20px;
-}
-.product {
-    background:white;
-    padding:10px;
-    border-radius:10px;
-    box-shadow:0 0 10px #ccc;
-    text-align:center;
-    transition:0.3s;
-}
+.product-container { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:20px; padding:20px; }
+.product { background:white; padding:10px; border-radius:10px; box-shadow:0 0 10px #ccc; text-align:center; transition:0.3s; }
 .product:hover { transform: scale(1.03); }
 .product img { width:100%; height:150px; object-fit:cover; border-radius:10px; }
 .product h3 { font-size:16px; margin:10px 0; }
 .price { font-size:18px; color:red; font-weight:bold; }
 .product button { width:100%; padding:10px; background:#3498db; color:white; border:none; margin-top:10px; cursor:pointer; }
 .product button:hover { background:#217dbb; }
-
-/* Modal giỏ hàng */
 .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; }
 .modal-content { background:white; padding:20px; width:90%; max-width:800px; border-radius:10px; max-height:90%; overflow-y:auto; }
 .close { float:right; cursor:pointer; font-size:24px; font-weight:bold; }
@@ -82,8 +34,6 @@ table { width:100%; border-collapse:collapse; margin-top:10px; }
 th, td { border:1px solid #ccc; padding:10px; text-align:center; }
 th { background:#3498db; color:white; }
 input.qty { width:50px; text-align:center; }
-
-/* Thông tin thanh toán */
 .payment { margin-top:20px; }
 .payment label { display:block; margin-top:10px; }
 .payment input { width:100%; padding:8px; margin-top:5px; box-sizing:border-box; }
@@ -98,10 +48,8 @@ input.qty { width:50px; text-align:center; }
     <div id="menuAccount" onclick="toggleAuth()">Đăng nhập / Đăng ký</div>
 </header>
 
-<!-- KHUNG ĐĂNG NHẬP / ĐĂNG KÝ -->
 <div class="container" id="authContainer">
 
-    <!-- ĐĂNG KÝ -->
     <div id="formDangKy">
         <h2>Đăng ký tài khoản</h2>
         <input type="text" id="dkUser" placeholder="Tên đăng nhập">
@@ -111,7 +59,6 @@ input.qty { width:50px; text-align:center; }
         <p class="switch" onclick="chuyenSangDangNhap()">Đã có tài khoản? Đăng nhập</p>
     </div>
 
-    <!-- ĐĂNG NHẬP -->
     <div id="formDangNhap" style="display:none;">
         <h2>Đăng nhập</h2>
         <input type="text" id="dnUser" placeholder="Tên đăng nhập">
@@ -120,7 +67,6 @@ input.qty { width:50px; text-align:center; }
         <p class="switch" onclick="chuyenSangDangKy()">Chưa có tài khoản? Đăng ký</p>
     </div>
 
-    <!-- SAU KHI ĐĂNG NHẬP -->
     <div id="formDaDangNhap" style="display:none;">
         <h2>Xin chào, <span id="tenUser"></span></h2>
         <button onclick="dangXuat()">Đăng xuất</button>
@@ -128,38 +74,11 @@ input.qty { width:50px; text-align:center; }
 
 </div>
 
-<!-- DANH SÁCH SẢN PHẨM -->
 <div id="productSection">
     <h1 style="text-align:center; padding:20px;">Danh sách sản phẩm</h1>
-    <div class="product-container">
-        <div class="product">
-            <img src="https://via.placeholder.com/300x200" alt="">
-            <h3>Đồng hồ điện tử mini</h3>
-            <p class="price">120.000₫</p>
-            <button onclick="addToCart('Đồng hồ điện tử mini',120000)">Thêm vào giỏ hàng</button>
-        </div>
-        <div class="product">
-            <img src="https://via.placeholder.com/300x200" alt="">
-            <h3>Bộ đo nhiệt độ thông minh</h3>
-            <p class="price">250.000₫</p>
-            <button onclick="addToCart('Bộ đo nhiệt độ thông minh',250000)">Thêm vào giỏ hàng</button>
-        </div>
-        <div class="product">
-            <img src="https://via.placeholder.com/300x200" alt="">
-            <h3>Máy đo điện đa năng</h3>
-            <p class="price">480.000₫</p>
-            <button onclick="addToCart('Máy đo điện đa năng',480000)">Thêm vào giỏ hàng</button>
-        </div>
-        <div class="product">
-            <img src="https://via.placeholder.com/300x200" alt="">
-            <h3>Công tắc hẹn giờ</h3>
-            <p class="price">95.000₫</p>
-            <button onclick="addToCart('Công tắc hẹn giờ',95000)">Thêm vào giỏ hàng</button>
-        </div>
-    </div>
+    <div class="product-container" id="productContainer"></div>
 </div>
 
-<!-- Modal giỏ hàng -->
 <div class="modal" id="cartModal">
     <div class="modal-content">
         <span class="close" onclick="closeCart()">&times;</span>
@@ -195,41 +114,67 @@ let shippingFee = 30000;
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 let user = JSON.parse(localStorage.getItem("currentUser"));
 
-/* Hiển thị trạng thái tài khoản */
+// Danh sách sản phẩm mới
+const products = [
+  {id:1, name:'Máy tính Dell', price:15000000, image:'may tinh dell.jpg'},
+  {id:2, name:'Laptop HP', price:12000000, image:'laptop hp.jpg'},
+  {id:3, name:'Chuột không dây', price:200000, image:'chuot khong day.jpg'},
+  {id:4, name:'Bàn phím cơ', price:1000000, image:'ban phim co.jpg'}
+];
+
+// Render sản phẩm
+function renderProducts() {
+    const container = document.getElementById("productContainer");
+    container.innerHTML = "";
+    products.forEach(product => {
+        const div = document.createElement("div");
+        div.className = "product";
+        div.innerHTML = `
+            <img src="${product.image}" alt="${product.name}">
+            <h3>${product.name}</h3>
+            <p class="price">${product.price.toLocaleString()}₫</p>
+            <button onclick="addToCart('${product.name}', ${product.price})">Thêm vào giỏ hàng</button>
+        `;
+        container.appendChild(div);
+    });
+}
+
+// Hiển thị trạng thái đăng nhập
 function hienThiDaDangNhap(){
     let u = JSON.parse(localStorage.getItem("currentUser"));
     if(u){
         document.getElementById("authContainer").style.display="none";
-        document.getElementById("menuAccount").innerText = "Xin chào, " + u.username;
+        document.getElementById("menuAccount").innerText="Xin chào, "+u.username;
         document.getElementById("formDaDangNhap").style.display="block";
-        document.getElementById("tenUser").innerText = u.username;
+        document.getElementById("tenUser").innerText=u.username;
         document.getElementById("productSection").style.display="block";
-        document.getElementById("fullName").value = u.username;
-        document.getElementById("phone").value = u.phone;
+        document.getElementById("fullName").value=u.username;
+        document.getElementById("phone").value=u.phone;
+        renderProducts();
     } else {
-        document.getElementById("menuAccount").innerText = "Đăng nhập / Đăng ký";
+        document.getElementById("menuAccount").innerText="Đăng nhập / Đăng ký";
         document.getElementById("authContainer").style.display="block";
     }
 }
 
-/* Toggle hiển thị authContainer */
 function toggleAuth(){
-    let c = document.getElementById("authContainer");
-    c.style.display = (c.style.display==="block")?"none":"block";
+    let u = JSON.parse(localStorage.getItem("currentUser"));
+    if(!u){
+        let c=document.getElementById("authContainer");
+        c.style.display=(c.style.display==="block")?"none":"block";
+    }
 }
 
-/* Chuyển form */
 function chuyenSangDangNhap(){ formDangKy.style.display="none"; formDangNhap.style.display="block"; formDaDangNhap.style.display="none"; }
 function chuyenSangDangKy(){ formDangKy.style.display="block"; formDangNhap.style.display="none"; formDaDangNhap.style.display="none"; }
 
-/* Đăng ký */
 function dangKy(){
-    let userName = dkUser.value.trim();
-    let pass = dkPass.value.trim();
-    let phone = dkPhone.value.trim();
+    let userName=dkUser.value.trim();
+    let pass=dkPass.value.trim();
+    let phone=dkPhone.value.trim();
     if(!userName||!pass||!phone){ alert("Vui lòng nhập đầy đủ!"); return; }
     if(!/^\d{10}$/.test(phone)){ alert("Số điện thoại phải gồm 10 chữ số!"); return; }
-    let accounts = JSON.parse(localStorage.getItem("accounts"))||[];
+    let accounts=JSON.parse(localStorage.getItem("accounts"))||[];
     if(accounts.find(a=>a.username===userName)){ alert("Tài khoản đã tồn tại!"); chuyenSangDangNhap(); return; }
     accounts.push({username:userName,password:pass,phone:phone});
     localStorage.setItem("accounts",JSON.stringify(accounts));
@@ -237,7 +182,6 @@ function dangKy(){
     chuyenSangDangNhap();
 }
 
-/* Đăng nhập */
 function dangNhap(){
     let userName=dnUser.value.trim();
     let pass=dnPass.value.trim();
@@ -249,29 +193,35 @@ function dangNhap(){
     hienThiDaDangNhap();
 }
 
-/* Đăng xuất */
 function dangXuat(){
     localStorage.removeItem("currentUser");
     alert("Đã đăng xuất!");
     location.reload();
 }
 
-/* Thêm sản phẩm vào giỏ hàng */
 function addToCart(name, price){
-    let found = cart.find(p=>p.name===name);
+    let found=cart.find(p=>p.name===name);
     if(found){ found.qty+=1; } else { cart.push({name:name,price:price,qty:1}); }
     localStorage.setItem("cart",JSON.stringify(cart));
     alert("Đã thêm vào giỏ hàng!");
 }
 
-/* Popup giỏ hàng */
 function openCart(){ renderCart(); document.getElementById("cartModal").style.display="flex"; }
 function closeCart(){ document.getElementById("cartModal").style.display="none"; }
 
-/* Render giỏ hàng */
 function renderCart(){
     let tbody=document.querySelector("#cartTable tbody");
+    let paymentSection = document.querySelector(".payment");
     tbody.innerHTML="";
+
+    if(cart.length===0){
+        tbody.innerHTML='<tr><td colspan="6">Giỏ hàng trống</td></tr>';
+        paymentSection.style.display = "none";
+        return;
+    } else {
+        paymentSection.style.display = "block";
+    }
+
     cart.forEach((item,i)=>{
         let total=item.price*item.qty;
         let tax=Math.round(total*0.1);
@@ -286,7 +236,6 @@ function renderCart(){
     });
 }
 
-/* Cập nhật số lượng */
 function updateQty(index,value){
     value=parseInt(value); if(value<1)value=1;
     cart[index].qty=value;
@@ -294,8 +243,11 @@ function updateQty(index,value){
     renderCart();
 }
 
-/* Thanh toán */
 function thanhToan(){
+    if(cart.length===0){
+        alert("Đơn hàng trống!");
+        return;
+    }
     let address=document.getElementById("address").value.trim();
     if(!address){ alert("Vui lòng nhập địa chỉ!"); return; }
     let info="Thông tin đơn hàng:\n\n";
@@ -315,5 +267,6 @@ hienThiDaDangNhap();
 </script>
 
 </body>
-  </html>
+                </html>
               
+
