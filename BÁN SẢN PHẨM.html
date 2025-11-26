@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sản phẩm công nghệ</title>
+<style>
+  body {font-family: Arial; margin:20px; background:#f3f4f6;}
+  input, button, textarea, select {padding:6px; margin:4px; border-radius:4px; border:1px solid #ccc;}
+  table {border-collapse: collapse; width:100%; margin-top:10px;}
+  th, td {border:1px solid #999; padding:6px; text-align:left;}
+  th {background:#0b74de; color:white;}
+  .cart {margin-top:20px; padding:10px; background:#fff; border:1px solid #ccc; border-radius:6px;}
+  img {max-width:80px; border-radius:4px;}
+</style>
+</head>
+<body>
+
+<h2>Thêm khách hàng</h2>
+<form id="custForm">
+  <input type="text" id="name" placeholder="Họ và tên" required>
+  <input type="text" id="phone" placeholder="Số điện thoại" required>
+  <input type="email" id="email" placeholder="Email">
+  <textarea id="address" placeholder="Địa chỉ"></textarea>
+  <button type="submit">Thêm khách hàng</button>
+</form>
+
+<h2>Danh sách khách hàng</h2>
+<table id="custTable">
+  <thead>
+    <tr><th>#</th><th>Họ và tên</th><th>Phone</th><th>Email</th><th>Địa chỉ</th><th>Chọn khách</th></tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<h2>Danh sách sản phẩm</h2>
+<table id="prodTable">
+  <thead>
+    <tr><th>#</th><th>Hình ảnh</th><th>Sản phẩm</th><th>Giá (VND)</th><th>Thêm vào giỏ</th></tr>
+  </thead>
+  <tbody></tbody></div>
+<div class="cart">
+  <h3>Giỏ hàng của khách: <span id="currentCustomer">Chưa chọn</span></h3>
+  <table id="cartTable">
+    <thead>
+      <tr><th>Hình ảnh</th><th>Sản phẩm</th><th>Đơn giá</th><th>Số lượng</th><th>Thành tiền</th><th>Xóa</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <h4>Tổng tiền: <span id="totalPrice">0 ₫</span></h4>
+<div class="cart">
+  <h3>Khách được chọn: <span id="currentCustomer">Chưa chọn</span></h3>
+  <p id="cartInfo">Giỏ hàng trống</p>
+  <h4>Tổng tiền: <span id="totalPrice">0₫</span></h4>
+  <button id="checkoutBtn" class="pay-btn">Thanh toán</button>
+</div></table>
+<script>
+const form = document.getElementById('custForm');
+const tableBody = document.querySelector('#custTable tbody');
+const prodTableBody = document.querySelector('#prodTable tbody');
+const cartTableBody = document.querySelector('#cartTable tbody');
+const totalPriceEl = document.getElementById('totalPrice');
+const currentCustomerEl = document.getElementById('currentCustomer');
+
+let customers = JSON.parse(localStorage.getItem('customers_demo') || '[]');
+let selectedCustomer = null;
+let cart = [];
+
+// Sản phẩm mẫu với hình ảnh
+const products = [
+  {id:1, name:'Máy tính Dell', price:15000000, image:'máy tính dell.jfif'},
+  {id:2, name:'Laptop HP', price:12000000, image:'laptop hp.jfif'},
+  {id:3, name:'Chuột không dây', price:200000, image:'chuột không dây.jfif'},
+  {id:4, name:'Bàn phím cơ', price:1000000, image:'bàn phím cơ.jfif'},
+];
+
+// Hiển thị danh sách khách hàng
+function renderTable() {
+  tableBody.innerHTML = '';
+  customers.forEach((c,i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${i+1}</td>
+                              <td>${c.name}</td>
+                              <td>${c.phone}</td>
+                              <td>${c.email||''}</td>
+                              <td>${c.address||''}</td>
+                              <td>
+                              <button onclick="selectCustomer(${i})">Chọn</button></td>`;
+    tableBody.appendChild(tr);
+  });
+}
+
+// Chọn khách hàng
+function selectCustomer(index){
+  selectedCustomer = customers[index];
+  currentCustomerEl.textContent = selectedCustomer.name;
+  alert(`Đã chọn khách: ${selectedCustomer.name}`);
+}
+// Xóa khách hàng
+function deleteCustomer(index){
+  if(confirm(`Bạn có chắc muốn xóa khách: ${customers[index].name}?`)){
+    // Nếu xóa khách đang chọn, reset chọn
+    if(selectedCustomer === customers[index]){
+      selectedCustomer = null;
+      currentCustomerEl.textContent = 'Chưa chọn';
+    }
+    customers.splice(index,1);
+    localStorage.setItem('customers_demo', JSON.stringify(customers));
+    renderTable();
+  }
+}
+
+// Hiển thị sản phẩm
+function renderProducts() {
+  prodTableBody.innerHTML = '';
+  products.forEach((p,i)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${i+1}</td><td><img src="${p.image}" alt="${p.name}"></td><td>${p.name}</td><td>${p.price.toLocaleString('vi-VN')} ₫</td>
+    <td><button onclick="addToCart(${p.id})">Thêm</button></td>`;
+    prodTableBody.appendChild(tr);
+  });
+}
+
+// Thêm vào giỏ
+function addToCart(prodId){
+  if(!selectedCustomer){alert('Vui lòng chọn khách hàng trước!'); return;}
+  const prod = products.find(p=>p.id===prodId);
+  const item = cart.find(c=>c.id===prodId);
+  if(item){item.qty++;}
+  else{cart.push({...prod, qty:1});}
+  renderCart();
+}
+
+// Hiển thị giỏ hàng
+function renderCart(){
+  cartTableBody.innerHTML='';
+  let total = 0;
+  cart.forEach((c,i)=>{
+    const sub = c.price*c.qty;
+    total += sub;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><img src="${c.image}" alt="${c.name}"></td><td>${c.name}</td><td>${c.price.toLocaleString('vi-VN')} ₫</td><td>${c.qty}</td><td>${sub.toLocaleString('vi-VN')} ₫</td>
+    <td><button onclick="removeFromCart(${i})">Xóa</button></td>`;
+    cartTableBody.appendChild(tr);
+  });
+  totalPriceEl.textContent = total.toLocaleString('vi-VN')+' ₫';
+}
+
+// Xóa sản phẩm khỏi giỏ
+function removeFromCart(index){
+  cart.splice(index,1);
+  renderCart();
+}
+
+// Xử lý form khách hàng
+form.addEventListener('submit', e=>{
+  e.preventDefault();
+  const newCust = {
+    name: document.getElementById('name').value,
+    phone: document.getElementById('phone').value,
+    email: document.getElementById('email').value,
+    address: document.getElementById('address').value
+  };
+  customers.push(newCust);
+  localStorage.setItem('customers_demo', JSON.stringify(customers));
+  renderTable();
+  form.reset();
+});
+
+renderTable();
+renderProducts();
+</script>
+
+</body>
+</html>
