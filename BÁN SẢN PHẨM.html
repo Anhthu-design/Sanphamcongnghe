@@ -5,93 +5,41 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Website</title>
 <style>
-body { 
-    font-family: Arial, sans-serif; 
-    margin:0; 
-    background: linear-gradient(135deg, #74ABE2, #5563DE); 
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
+body { font-family: Arial, sans-serif; margin:0; background: linear-gradient(135deg, #74ABE2, #5563DE); min-height:100vh; }
 
 /* HEADER */
 header {
     display:flex; justify-content:flex-start; align-items:center;
     background:#3498db; padding:10px 20px; color:white;
-    width:100%;
-    position:fixed;
-    top:0;
-    left:0;
-    box-sizing:border-box;
-    z-index:10;
+    width:100%; position:fixed; top:0; left:0; box-sizing:border-box; z-index:10;
 }
 header .cart { cursor:pointer; font-size:18px; margin-left:20px; }
 header .cart:hover { text-decoration:underline; }
-header #menuAccount { margin-left:auto; cursor:pointer; font-size:18px; }
-header #menuAccount:hover { text-decoration:underline; }
+header #menuAccount { margin-left:auto; cursor:pointer; font-size:18px; position:relative; }
+#dropdown { display:none; position:absolute; right:0; top:35px; background:white; color:black; border:1px solid #ccc; border-radius:8px; padding:10px; min-width:200px; box-shadow:0 5px 15px rgba(0,0,0,0.2); z-index:30; }
 
 /* KHUNG ĐĂNG NHẬP / ĐĂNG KÝ */
 .container {
-    width:380px;
-    background: rgba(255,255,255,0.95);
-    padding:30px 25px;
-    border-radius:15px;
-    box-shadow:0 15px 25px rgba(0,0,0,0.3);
-    text-align:center;
-    margin-top:80px;
+    width:380px; background: rgba(255,255,255,0.95); padding:30px 25px;
+    border-radius:15px; box-shadow:0 15px 25px rgba(0,0,0,0.3); text-align:center;
+    margin:120px auto 20px auto;
 }
-
-.container h2 {
-    margin-bottom:25px;
-    color:#333;
-    font-size:24px;
-}
-
-input {
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border-radius:8px;
-    border:1px solid #ccc;
-    box-sizing:border-box;
-    font-size:16px;
-}
-
-button {
-    width:100%;
-    padding:12px;
-    background:#5563DE;
-    color:white;
-    border:none;
-    border-radius:8px;
-    font-size:16px;
-    cursor:pointer;
-    transition:0.3s;
-    margin-top:15px;
-}
-
+.container h2 { margin-bottom:25px; color:#333; font-size:24px; }
+input { width:100%; padding:12px; margin:10px 0; border-radius:8px; border:1px solid #ccc; font-size:16px; }
+button { width:100%; padding:12px; background:#5563DE; color:white; border:none; border-radius:8px; font-size:16px; cursor:pointer; transition:0.3s; margin-top:15px; }
 button:hover { background:#4351b3; }
-
-.switch {
-    text-align:center;
-    color:#e74c3c;
-    margin-top:15px;
-    cursor:pointer;
-    font-weight:bold;
-}
-
+.switch { text-align:center; color:#e74c3c; margin-top:15px; cursor:pointer; font-weight:bold; }
 .switch:hover { text-decoration:underline; }
 
 /* DANH SÁCH SẢN PHẨM */
-#productSection { display:none; padding-top:100px; width:100%; }
-.product-container { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:20px; padding:20px; }
-.product { background:white; padding:10px; border-radius:10px; box-shadow:0 0 10px #ccc; text-align:center; transition:0.3s; }
-.product:hover { transform: scale(1.03); }
-.product img { width:100%; height:150px; object-fit:cover; border-radius:10px; }
+#productSection { display:none; padding-top:100px; width:90%; margin:0 auto; }
+.product-container { display:flex; flex-wrap:wrap; gap:20px; justify-content:center; }
+.product { background:white; padding:15px; border-radius:12px; box-shadow:0 5px 15px rgba(0,0,0,0.2); text-align:center; width:200px; transition:0.3s; }
+.product:hover { transform:scale(1.05); }
+.product img { width:100%; height:150px; object-fit:cover; border-radius:12px; }
 .product h3 { font-size:16px; margin:10px 0; }
-.price { font-size:18px; color:red; font-weight:bold; }
-.product button { width:100%; padding:10px; background:#3498db; color:white; border:none; margin-top:10px; cursor:pointer; }
+.price { font-size:18px; color:red; font-weight:bold; margin-bottom:10px; }
+.product button { width:100%; padding:10px; background:#3498db; color:white; border:none; margin-top:10px; cursor:pointer; border-radius:8px; }
 .product button:hover { background:#217dbb; }
 
 /* GIỎ HÀNG */
@@ -115,7 +63,14 @@ input.qty { width:50px; text-align:center; }
 
 <header>
     <div class="cart" onclick="openCart()">🛒 Giỏ hàng</div>
-    <div id="menuAccount" onclick="toggleAuth()">Đăng nhập / Đăng ký</div>
+    <div id="menuAccount">
+        Đăng nhập / Đăng ký
+        <div id="dropdown">
+            <p><strong>Tài khoản:</strong> <span id="dropUser"></span></p>
+            <p><strong>SĐT:</strong> <span id="dropPhone"></span></p>
+            <button onclick="dangXuat()">Đăng xuất</button>
+        </div>
+    </div>
 </header>
 
 <div class="container" id="authContainer">
@@ -181,10 +136,6 @@ input.qty { width:50px; text-align:center; }
 </div>
 
 <script>
-let shippingFee = 30000;
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-let user = JSON.parse(localStorage.getItem("currentUser"));
-
 const products = [
   {id:1, name:'Máy tính Dell', price:15000000, image:'máy tính dell.jpg'},
   {id:2, name:'Laptop HP', price:12000000, image:'laptop hp.jpg'},
@@ -192,24 +143,24 @@ const products = [
   {id:4, name:'Bàn phím cơ', price:1000000, image:'bàn phím cơ.jpg'}
 ];
 
-function renderProducts() {
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let user = JSON.parse(localStorage.getItem("currentUser"));
+let shippingFee = 30000;
+
+function renderProducts(){
     const container = document.getElementById("productContainer");
-    container.innerHTML = "";
-    products.forEach(product => {
+    container.innerHTML="";
+    products.forEach(p=>{
         const div = document.createElement("div");
-        div.className = "product";
-        div.innerHTML = `
-            <img src="${product.image}" alt="${product.name}">
-            <h3>${product.name}</h3>
-            <p class="price">${product.price.toLocaleString()}₫</p>
-            <button onclick="addToCart('${product.name}', ${product.price})">Thêm vào giỏ hàng</button>
-        `;
+        div.className="product";
+        div.innerHTML=`<img src="${p.image}" alt="${p.name}"><h3>${p.name}</h3><p class="price">${p.price.toLocaleString()}₫</p>
+        <button onclick="addToCart('${p.name}',${p.price})">Thêm vào giỏ hàng</button>`;
         container.appendChild(div);
     });
 }
 
 function hienThiDaDangNhap(){
-    let u = JSON.parse(localStorage.getItem("currentUser"));
+    let u=JSON.parse(localStorage.getItem("currentUser"));
     if(u){
         document.getElementById("authContainer").style.display="none";
         document.getElementById("menuAccount").innerText="Xin chào, "+u.username;
@@ -218,6 +169,8 @@ function hienThiDaDangNhap(){
         document.getElementById("productSection").style.display="block";
         document.getElementById("fullName").value=u.username;
         document.getElementById("phone").value=u.phone;
+        document.getElementById("dropUser").innerText=u.username;
+        document.getElementById("dropPhone").innerText=u.phone;
         renderProducts();
     } else {
         document.getElementById("menuAccount").innerText="Đăng nhập / Đăng ký";
@@ -225,13 +178,16 @@ function hienThiDaDangNhap(){
     }
 }
 
-function toggleAuth(){
+// Toggle dropdown click
+const menuAccount = document.getElementById("menuAccount");
+const dropdown = document.getElementById("dropdown");
+menuAccount.addEventListener("click", function(event){
     let u = JSON.parse(localStorage.getItem("currentUser"));
-    if(!u){
-        let c=document.getElementById("authContainer");
-        c.style.display=(c.style.display==="block")?"none":"block";
-    }
-}
+    if(u){ dropdown.style.display=(dropdown.style.display==="block")?"none":"block"; }
+    else { document.getElementById("authContainer").style.display="block"; }
+    event.stopPropagation();
+});
+document.addEventListener("click", ()=>{ dropdown.style.display="none"; });
 
 function chuyenSangDangNhap(){ formDangKy.style.display="none"; formDangNhap.style.display="block"; formDaDangNhap.style.display="none"; }
 function chuyenSangDangKy(){ formDangKy.style.display="block"; formDangNhap.style.display="none"; formDaDangNhap.style.display="none"; }
@@ -279,15 +235,10 @@ function closeCart(){ document.getElementById("cartModal").style.display="none";
 
 function renderCart(){
     let tbody=document.querySelector("#cartTable tbody");
-    let paymentSection = document.querySelector(".payment");
+    let paymentSection=document.querySelector(".payment");
     tbody.innerHTML="";
-
-    if(cart.length===0){
-        tbody.innerHTML='<tr><td colspan="7">Giỏ hàng trống</td></tr>';
-        paymentSection.style.display = "none";
-        return;
-    } else { paymentSection.style.display = "block"; }
-
+    if(cart.length===0){ tbody.innerHTML='<tr><td colspan="7">Giỏ hàng trống</td></tr>'; paymentSection.style.display="none"; return; }
+    else { paymentSection.style.display="block"; }
     cart.forEach((item,i)=>{
         let total=item.price*item.qty;
         let tax=Math.round(total*0.1);
@@ -303,23 +254,14 @@ function renderCart(){
     });
 }
 
-function updateQty(index,value){
-    value=parseInt(value); if(value<1)value=1;
-    cart[index].qty=value;
-    localStorage.setItem("cart",JSON.stringify(cart));
-    renderCart();
-}
-
-function deleteItem(index){
-    cart.splice(index,1);
-    localStorage.setItem("cart",JSON.stringify(cart));
-    renderCart();
-}
+function updateQty(index,value){ value=parseInt(value); if(value<1)value=1; cart[index].qty=value; localStorage.setItem("cart",JSON.stringify(cart)); renderCart(); }
+function deleteItem(index){ cart.splice(index,1); localStorage.setItem("cart",JSON.stringify(cart)); renderCart(); }
 
 function thanhToan(){
     if(cart.length===0){ alert("Đơn hàng trống!"); return; }
     let address=document.getElementById("address").value.trim();
     if(!address){ alert("Vui lòng nhập địa chỉ!"); return; }
+    let u = JSON.parse(localStorage.getItem("currentUser"));
     let info="Thông tin đơn hàng:\n\n";
     let totalAmount=0;
     cart.forEach((item,i)=>{
@@ -329,17 +271,17 @@ function thanhToan(){
         totalAmount+=total+tax+shippingFee;
     });
     info+=`\nTổng thanh toán: ${totalAmount.toLocaleString()}₫`;
-    info+=`\n\nHọ tên: ${user.username}\nSĐT: ${user.phone}\nĐịa chỉ: ${address}`;
+    info+=`\n\nHọ tên: ${u.username}\nSĐT: ${u.phone}\nĐịa chỉ: ${address}`;
     alert(info);
 }
 
 hienThiDaDangNhap();
 renderProducts();
 </script>
-
 </body>
-                                                    </html>
-              
+    </html>
+
+
 
 
 
